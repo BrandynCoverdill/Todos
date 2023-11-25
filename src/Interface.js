@@ -105,9 +105,9 @@ function content() {
 		projectTbl.appendChild(tr);
 	});
 
-	// If there are any todos, add to todoTbl
-
 	// Style and add attributes to elements
+	projectTbl.classList.add('project-table');
+
 	parent.style.cssText = `
         min-height: 1.25em;
         border-block-end: 3px solid black;
@@ -161,7 +161,28 @@ function content() {
 	return parent;
 }
 
-function updateProjects() {}
+/**
+ * Updates the project table
+ */
+function updateProjects() {
+	const projectTbl = document.querySelector('.project-table');
+	projectTbl.textContent = '';
+	Project.projects().forEach((project) => {
+		const tr = document.createElement('tr');
+		const td = document.createElement('td');
+
+		td.textContent = project.getTitle;
+
+		td.style.cssText = `
+            font-size: 1.25em;
+            white-space: nowrap;
+            cursor: pointer;
+        `;
+
+		tr.appendChild(td);
+		projectTbl.appendChild(tr);
+	});
+}
 
 /**
  * Creates a default project
