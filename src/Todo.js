@@ -31,6 +31,14 @@ export default class Todo {
 		return todos;
 	}
 
+	// Static method to remove a todo
+	static removeTodo(todo) {
+		const temp = todos.filter((element) => {
+			return todo !== element;
+		});
+		todos = temp;
+	}
+
 	// Accessor Methods
 	get getTitle() {
 		if (this.title.trim() !== '') {

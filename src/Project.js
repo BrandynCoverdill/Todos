@@ -22,6 +22,14 @@ export default class Project {
 		return projects;
 	}
 
+	// Static method to remove object from projects array
+	static removeProject(id) {
+		const temp = projects.filter((project) => {
+			return id !== project.id;
+		});
+		projects = temp;
+	}
+
 	// Accessor Methods
 	get getId() {
 		return this.id;
