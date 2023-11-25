@@ -1,3 +1,3 @@
-import Interface from './Interface';
+import { userInterface, updateProjects } from './Interface';
 
-document.body.appendChild(Interface());
+document.body.appendChild(userInterface());

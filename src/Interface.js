@@ -7,7 +7,7 @@ import Project from './Project';
  * Returns the ui for the application
  * @returns parent
  */
-export default function Interface() {
+function userInterface() {
 	// Create a parent element that contains all dom elements
 	const parent = document.createElement('div');
 
@@ -161,6 +161,8 @@ function content() {
 	return parent;
 }
 
+function updateProjects() {}
+
 /**
  * Creates a default project
  * @returns defaultProject
@@ -169,3 +171,5 @@ function createDefaultProject() {
 	const defaultProject = new Project();
 	return defaultProject;
 }
+
+export { userInterface, updateProjects };
