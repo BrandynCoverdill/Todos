@@ -219,7 +219,6 @@ function updateProjects() {
  * @param {Number} id project id
  */
 function showTodos(id) {
-	console.log(id);
 	// Todo header elements
 	const todoHeader = document.createElement('div');
 	const newTodoBtn = document.createElement('button');
