@@ -3,6 +3,20 @@ body > * {
 	padding: 0;
 }
 
+* {
+	box-sizing: border-box;
+}
+
+body,
+html {
+	height: 100%;
+}
+
 .completed {
 	text-decoration: line-through;
+}
+
+table tr:nth-child(odd) {
+	background: rgb(208, 208, 208);
+	margin: 0;
 }
