@@ -1,5 +1,8 @@
 import Error from './ErrorMessage';
 
+// Array of todo objects
+let todos = [];
+
 /**
  * Class that creates Todo Objects
  */
@@ -11,7 +14,7 @@ export default class Todo {
 		priority = 3,
 		notes = '',
 		isCompleted = false,
-		inProject = 0
+		inProject
 	) {
 		this.title = title;
 		this.desc = desc;
@@ -20,6 +23,12 @@ export default class Todo {
 		this.notes = notes;
 		this.isCompleted = isCompleted;
 		this.inProject = inProject;
+		todos.push(this);
+	}
+
+	// Static method to return todos array
+	static todos() {
+		return todos;
 	}
 
 	// Accessor Methods
