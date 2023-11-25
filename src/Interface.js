@@ -220,6 +220,7 @@ function updateProjects() {
  */
 function showTodos(id) {
 	// Todo header elements
+	// TODO: Add heading element to the header element and have it's value as the project name
 	const todoHeader = document.createElement('div');
 	const newTodoBtn = document.createElement('button');
 
@@ -333,4 +334,61 @@ function createDefaultProject() {
 	return defaultProject;
 }
 
-export { userInterface, updateProjects, showTodos };
+/**
+ * Creates a new project from the user event
+ */
+function createProject() {
+	// Create Default project
+	const newProject = createDefaultProject();
+	// Track project id
+	const projectId = newProject.getId;
+	// Append the new project in the table
+	updateProjects();
+	// Replace the title with a textbox with the title highlighted
+	const selectedProject = document.querySelector(
+		`.project-table tr[data-id="${projectId}"]`
+	);
+	selectedProject.textContent = '';
+
+	const titleInput = document.createElement('input');
+	titleInput.setAttribute('type', 'text');
+	titleInput.value = 'Untitled Project';
+	titleInput.style.cssText = `
+        font-size: 1.25em;
+        border: none;
+    `;
+	selectedProject.appendChild(titleInput);
+	titleInput.focus();
+	titleInput.select();
+
+	// Add event for when the user presses enter
+	selectedProject.addEventListener('keydown', (e) => {
+		if (e.keyCode === 13 || e.key === 'Enter') {
+			// Validate title entered by user
+			if (titleInput.value.trim() === '') {
+				Project.removeProject(projectId);
+				updateProjects();
+				// Add click events for each project title
+				// TODO
+
+				return;
+			}
+			// If validation is good, replace input with title given
+			newProject.setTitle = titleInput.value.trim();
+			updateProjects();
+			// Add click events for each project title
+			// TODO
+			const projects = document.querySelectorAll('.project-table > tr');
+			projects.forEach((project) => {
+				project.addEventListener('click', (e) => {
+					console.log(e.target.dataset.id);
+					showTodos(e.target.dataset.id);
+				});
+			});
+			// Show todos of this newly created project
+			showTodos(projectId);
+		}
+	});
+}
+
+export { userInterface, showTodos, createProject };
