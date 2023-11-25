@@ -11,16 +11,61 @@ function userInterface() {
 	// Create a parent element that contains all dom elements
 	const parent = document.createElement('div');
 
-	// Default project
+	// Default project object
 	const defaultProject = createDefaultProject();
 
-	// Temp data
-	const firstProject = new Project('First Project');
-	const secondProject = new Project('Second Project');
-	const thirdProject = new Project('Third Project');
-	const fourthProject = new Project('Fourth Project');
-	const fifthProject = new Project('Fifth Project');
-	console.log(Project.projects());
+	// Default todo object
+	const defaultTodo = new Todo(
+		'Untitled Todo',
+		'',
+		undefined,
+		1,
+		'',
+		false,
+		defaultProject.getId
+	);
+
+	// Temp project objects
+	const project1 = new Project('Project 1');
+	const project2 = new Project('Project 2');
+
+	// Temp todo objects
+	const todo1 = new Todo(
+		'Bake supper for family tonight',
+		'',
+		new Date().toLocaleDateString(),
+		3,
+		'',
+		false,
+		defaultProject.getId
+	);
+	const todo2 = new Todo(
+		'Drink water',
+		'',
+		undefined,
+		2,
+		'',
+		false,
+		defaultProject.getId
+	);
+	const todo3 = new Todo(
+		'Mow the lawn for extra $$$',
+		'',
+		undefined,
+		1,
+		'',
+		false,
+		project1.getId
+	);
+	const todo4 = new Todo(
+		'Call Rebecca',
+		'',
+		undefined,
+		2,
+		'',
+		false,
+		project1.getId
+	);
 
 	// Append elements to the parent element.
 	parent.appendChild(header());
@@ -84,9 +129,6 @@ function content() {
 	const projectDiv = document.createElement('div');
 	const projectTbl = document.createElement('table');
 	const todoDiv = document.createElement('div');
-	const todoHeader = document.createElement('div');
-	const newTodoBtn = document.createElement('button');
-	const todoTbl = document.createElement('table');
 
 	// If there are any projects, add to projectTbl
 	Project.projects().forEach((project) => {
@@ -94,6 +136,7 @@ function content() {
 		const td = document.createElement('td');
 
 		td.textContent = project.getTitle;
+		td.dataset.id = project.getId;
 
 		td.style.cssText = `
             font-size: 1.25em;
@@ -107,6 +150,7 @@ function content() {
 
 	// Style and add attributes to elements
 	projectTbl.classList.add('project-table');
+	todoDiv.classList.add('todo-container');
 
 	parent.style.cssText = `
         min-height: 1.25em;
@@ -134,24 +178,7 @@ function content() {
         overflow: auto;
     `;
 
-	newTodoBtn.style.cssText = `
-        cursor: pointer;
-        border: none;
-        background: transparent;
-        color: blue;
-    `;
-
-	todoHeader.style.cssText = `
-        border-block-end: 1px solid black;
-    `;
-
-	// Add text to elements
-	newTodoBtn.textContent = '+ new todo';
-
 	// Element hierarchy
-	todoHeader.appendChild(newTodoBtn);
-	todoDiv.appendChild(todoHeader);
-	todoDiv.appendChild(todoTbl);
 	projectDiv.appendChild(projectTbl);
 	grid.appendChild(projectDiv);
 	grid.appendChild(todoDiv);
@@ -166,12 +193,15 @@ function content() {
  */
 function updateProjects() {
 	const projectTbl = document.querySelector('.project-table');
+
 	projectTbl.textContent = '';
+
 	Project.projects().forEach((project) => {
 		const tr = document.createElement('tr');
 		const td = document.createElement('td');
 
 		td.textContent = project.getTitle;
+		tr.dataset.id = project.getId;
 
 		td.style.cssText = `
             font-size: 1.25em;
@@ -185,6 +215,117 @@ function updateProjects() {
 }
 
 /**
+ * Show a table of todos of the selected project
+ * @param {Number} id project id
+ */
+function showTodos(id) {
+	console.log(id);
+	// Todo header elements
+	const todoHeader = document.createElement('div');
+	const newTodoBtn = document.createElement('button');
+
+	newTodoBtn.textContent = '+ new todo';
+	newTodoBtn.style.cssText = `
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: blue;
+        `;
+	todoHeader.style.cssText = `
+        border-bottom: 1px solid black;
+    `;
+
+	// Grab container
+	const divContainer = document.querySelector('.todo-container');
+
+	// Empty container to refresh it with new data
+	divContainer.textContent = '';
+
+	// Append todo header to add todos
+	todoHeader.appendChild(newTodoBtn);
+	divContainer.appendChild(todoHeader);
+
+	// Create elements for the table
+	const todoTbl = document.createElement('table');
+
+	// Grab todos only relavent to project
+	const temp = Todo.todos().filter((todo) => {
+		return todo.inProject == id;
+	});
+
+	// If there are no todos in a project
+	if (temp.length === 0) {
+		const p = document.createElement('p');
+		p.textContent = 'No Todos';
+		p.style.cssText = `
+            margin: 0;
+        `;
+		divContainer.appendChild(p);
+	}
+
+	// Add todo to the table
+	temp.forEach((todo) => {
+		// Todo table elements
+		const tr = document.createElement('tr');
+		const td = document.createElement('td');
+		const title = document.createElement('span');
+		const date = document.createElement('span');
+
+		title.textContent = todo.getTitle;
+		date.textContent = `Due: ${todo.getDueDate}`;
+
+		tr.dataset.id = todo.id;
+
+		td.style.cssText = `
+            white-space: nowrap;
+            cursor: pointer;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            gap: 0.5em;
+        `;
+
+		// Color the todo's depending on priority
+		switch (todo.getPriority) {
+			case 1:
+				// No coloring
+				break;
+			case 2:
+				tr.style.cssText = `
+                    background: #F4F28A;
+                `;
+				break;
+			case 3:
+				tr.style.cssText = `
+                    background: #FF7A7A;
+                    font-weight: bold;
+                `;
+				break;
+			default:
+				break;
+		}
+
+		// Append table elements to table
+		td.appendChild(title);
+		td.appendChild(date);
+		tr.appendChild(td);
+		todoTbl.appendChild(tr);
+	});
+
+	// Style table
+	todoTbl.style.cssText = `
+            width: 100%;
+        `;
+
+	// Element hierarchy
+
+	// If todo table is empty
+	if (temp.length > 0) {
+		divContainer.appendChild(todoTbl);
+	}
+}
+
+/**
  * Creates a default project
  * @returns defaultProject
  */
@@ -193,4 +334,4 @@ function createDefaultProject() {
 	return defaultProject;
 }
 
-export { userInterface, updateProjects };
+export { userInterface, updateProjects, showTodos };

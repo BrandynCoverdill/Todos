@@ -1,5 +1,8 @@
 import Error from './ErrorMessage';
 
+// Id for todo objects
+let count = 0;
+
 // Array of todo objects
 let todos = [];
 
@@ -16,6 +19,7 @@ export default class Todo {
 		isCompleted = false,
 		inProject
 	) {
+		this.id = count++;
 		this.title = title;
 		this.desc = desc;
 		this.dueDate = dueDate;
@@ -32,9 +36,9 @@ export default class Todo {
 	}
 
 	// Static method to remove a todo
-	static removeTodo(todo) {
+	static removeTodo(id) {
 		const temp = todos.filter((element) => {
-			return todo !== element;
+			return id !== element.id;
 		});
 		todos = temp;
 	}
