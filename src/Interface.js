@@ -220,11 +220,15 @@ function updateProjects() {
  */
 function showTodos(id) {
 	// Todo header elements
-	// TODO: Add heading element to the header element and have it's value as the project name
+	const todoh2 = document.createElement('h2');
 	const todoHeader = document.createElement('div');
 	const newTodoBtn = document.createElement('button');
 
+	todoh2.textContent = `${Project.projects()[id].getTitle}`;
 	newTodoBtn.textContent = '+ new todo';
+	todoh2.style.cssText = `
+		margin: 0;
+	`;
 	newTodoBtn.style.cssText = `
             cursor: pointer;
             border: none;
@@ -242,6 +246,7 @@ function showTodos(id) {
 	divContainer.textContent = '';
 
 	// Append todo header to add todos
+	todoHeader.appendChild(todoh2);
 	todoHeader.appendChild(newTodoBtn);
 	divContainer.appendChild(todoHeader);
 
