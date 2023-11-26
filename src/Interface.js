@@ -345,10 +345,13 @@ function createDefaultProject() {
 function createProject() {
 	// Create Default project
 	const newProject = createDefaultProject();
+
 	// Track project id
 	const projectId = newProject.getId;
+
 	// Append the new project in the table
 	updateProjects();
+
 	// Replace the title with a textbox with the title highlighted
 	const selectedProject = document.querySelector(
 		`.project-table tr td[data-id="${projectId}"]`
@@ -359,8 +362,7 @@ function createProject() {
 	titleInput.setAttribute('type', 'text');
 	titleInput.value = 'Untitled Project';
 	titleInput.style.cssText = `
-        font-size: 1.25em;
-        border: none;
+		width: 100%;
     `;
 	selectedProject.appendChild(titleInput);
 	titleInput.focus();
@@ -373,6 +375,7 @@ function createProject() {
 			if (titleInput.value.trim() === '') {
 				Project.removeProject(projectId);
 				updateProjects();
+
 				// Add click events for each project title
 				const projects = document.querySelectorAll('.project-table tr > td');
 				projects.forEach((project) => {
@@ -385,6 +388,7 @@ function createProject() {
 			// If validation is good, replace input with title given
 			newProject.setTitle = titleInput.value.trim();
 			updateProjects();
+
 			// Add click events for each project title
 			const projects = document.querySelectorAll('.project-table tr > td');
 			projects.forEach((project) => {
@@ -398,4 +402,4 @@ function createProject() {
 	});
 }
 
-export {userInterface, showTodos, createProject};
+export { userInterface, showTodos, createProject };
