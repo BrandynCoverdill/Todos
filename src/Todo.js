@@ -38,9 +38,18 @@ export default class Todo {
 	// Static method to remove a todo
 	static removeTodo(id) {
 		const temp = todos.filter((element) => {
-			return id !== element.id;
+			return +id !== element.id;
 		});
 		todos = temp;
+	}
+
+	// Static method to remove all todos of projectId
+	static removeTodos(id) {
+		todos.forEach((todo) => {
+			if (todo.inProject === +id) {
+				Todo.removeTodo(todo.id);
+			}
+		});
 	}
 
 	// Accessor Methods

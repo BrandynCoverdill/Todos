@@ -33,7 +33,7 @@ export default class Project {
 	// Static method to remove object from projects array
 	static removeProject(id) {
 		const temp = projects.filter((project) => {
-			return id !== project.id;
+			return +id !== project.id;
 		});
 		projects = temp;
 	}

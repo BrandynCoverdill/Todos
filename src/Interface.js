@@ -261,7 +261,6 @@ function showTodos(id) {
 		`;
 	});
 
-	// If null, return
 	const selectedProject = document.querySelector(
 		`.project-table tr td[data-id="${id}"]`
 	);
@@ -280,22 +279,46 @@ function showTodos(id) {
 	// Todo header elements
 	const todoh2 = document.createElement('h2');
 	const todoHeader = document.createElement('div');
+	const todoDiv = document.createElement('div');
 	const newTodoBtn = document.createElement('button');
+	const deleteProjectBtn = document.createElement('button');
 
+	todoDiv.style.cssText = `
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		padding-inline-end: 1em;
+		margin-block-start: 0.5em;
+	`;
 	todoh2.textContent = `${Project.getObjectTitle(id)}`;
 	newTodoBtn.textContent = '+ new todo';
+	deleteProjectBtn.textContent = 'Delete Project';
 	todoh2.style.cssText = `
 		margin: 0;
 	`;
 	newTodoBtn.style.cssText = `
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            color: blue;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        color: blue;
         `;
+	deleteProjectBtn.style.cssText = `
+		cursor: pointer;
+		background: #50AAF7;
+		color: #0D2BA6;
+		border: 2px solid #0C7DED;
+	`;
 	todoHeader.style.cssText = `
         border-bottom: 1px solid black;
     `;
+
+	deleteProjectBtn.dataset.id = id;
+
+	// Click event for deleting projects
+	deleteProjectBtn.addEventListener('click', (e) => {
+		e.preventDefault();
+		deleteProject(id);
+	});
 
 	// Grab container
 	const divContainer = document.querySelector('.todo-container');
@@ -304,7 +327,9 @@ function showTodos(id) {
 	divContainer.textContent = '';
 
 	// Append todo header to add todos
-	todoHeader.appendChild(todoh2);
+	todoDiv.appendChild(todoh2);
+	todoDiv.appendChild(deleteProjectBtn);
+	todoHeader.appendChild(todoDiv);
 	todoHeader.appendChild(newTodoBtn);
 	divContainer.appendChild(todoHeader);
 
@@ -502,6 +527,32 @@ function editProject(id) {
 			showTodos(id);
 		}
 	});
+}
+
+function deleteProject(id) {
+	// Grab user confirmation of deleting project
+	let confirmation = false;
+	confirm(
+		'Are you sure you want to delete this project? ' +
+			"Any todo's in this project will also be deleted."
+	)
+		? (confirmation = true)
+		: (confirmation = false);
+
+	if (confirmation) {
+		// Delete the todos
+		Todo.removeTodos(id);
+
+		// Delete the project
+		Project.removeProject(id);
+
+		// Update Projects
+		updateProjects();
+
+		// Make Todo table blank
+		const todoContainer = document.querySelector('.todo-container');
+		todoContainer.textContent = '';
+	}
 }
 
 export { userInterface, showTodos, createProject, editProject };
