@@ -229,6 +229,14 @@ function updateProjects() {
 function showTodos(id) {
 	// Highlight the project in the table when selected
 	updateProjects();
+	const selectedProject = document.querySelector(
+		`.project-table tr td[data-id="${id}"]`
+	);
+	selectedProject.closest('tr').style.cssText = `
+		background: #50AAF7;
+		color: #0D2BA6;
+		font-weight: bold;
+	`;
 
 	// Todo header elements
 	const todoh2 = document.createElement('h2');
