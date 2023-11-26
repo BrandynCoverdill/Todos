@@ -22,6 +22,14 @@ export default class Project {
 		return projects;
 	}
 
+	// Static method to return an object's title from projects
+	static getObjectTitle(id) {
+		const project = projects.filter((element) => {
+			return element.id === +id;
+		});
+		return project[0].title;
+	}
+
 	// Static method to remove object from projects array
 	static removeProject(id) {
 		const temp = projects.filter((project) => {

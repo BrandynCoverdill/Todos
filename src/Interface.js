@@ -191,7 +191,7 @@ function content() {
 /**
  * Updates the project table
  */
-function updateProjects() {
+function updateProjects(id) {
 	const projectTbl = document.querySelector('.project-table');
 
 	projectTbl.textContent = '';
@@ -213,11 +213,22 @@ function updateProjects() {
 		projectTbl.appendChild(tr);
 	});
 
-	// Add click events for each project title
+	// Add click events for each project title except selected project
 	const projects = document.querySelectorAll('.project-table tr > td');
 	projects.forEach((project) => {
 		project.addEventListener('click', (e) => {
+			if (e.target.dataset.id === id) {
+				return;
+			}
+			e.preventDefault();
 			showTodos(e.target.dataset.id);
+		});
+	});
+
+	// TODO: Add dblclick event for each project title
+	projects.forEach((project) => {
+		project.addEventListener('dblclick', (e) => {
+			editProject(e.target.dataset.id);
 		});
 	});
 }
@@ -228,10 +239,38 @@ function updateProjects() {
  */
 function showTodos(id) {
 	// Highlight the project in the table when selected
-	updateProjects();
+
+	// remove previously highlighted project selection
+	const projects = document.querySelectorAll('.project-table > tr');
+	projects.forEach((project) => {
+		project.style.cssText = `
+			background: none;
+			color: black;
+			font-weight: normal;
+		`;
+	});
+
+	// Styling table for every odd project title
+	const oddProjects = document.querySelectorAll(
+		'.project-table tr:nth-child(odd)'
+	);
+	oddProjects.forEach((project) => {
+		project.style.cssText = `
+			background: rgb(208, 208, 208);
+			margin: 0;
+		`;
+	});
+
+	// If null, return
 	const selectedProject = document.querySelector(
 		`.project-table tr td[data-id="${id}"]`
 	);
+
+	// Check if selected project is null, if not, continue with highlight
+	if (selectedProject === null) {
+		return;
+	}
+
 	selectedProject.closest('tr').style.cssText = `
 		background: #50AAF7;
 		color: #0D2BA6;
@@ -243,7 +282,7 @@ function showTodos(id) {
 	const todoHeader = document.createElement('div');
 	const newTodoBtn = document.createElement('button');
 
-	todoh2.textContent = `${Project.projects()[id].getTitle}`;
+	todoh2.textContent = `${Project.getObjectTitle(id)}`;
 	newTodoBtn.textContent = '+ new todo';
 	todoh2.style.cssText = `
 		margin: 0;
@@ -369,9 +408,9 @@ function createProject() {
 	const projectId = newProject.getId;
 
 	// Append the new project in the table
-	updateProjects();
+	updateProjects(projectId);
 
-	// Replace the title with a textbox with the title highlighted
+	// Replace the title with a textbox with the title selected
 	const selectedProject = document.querySelector(
 		`.project-table tr td[data-id="${projectId}"]`
 	);
@@ -398,7 +437,7 @@ function createProject() {
 			}
 			// If validation is good, replace input with title given
 			newProject.setTitle = titleInput.value.trim();
-			updateProjects();
+			updateProjects(projectId);
 
 			// Show todos of this newly created project
 			showTodos(projectId);
@@ -406,4 +445,23 @@ function createProject() {
 	});
 }
 
-export { userInterface, showTodos, createProject };
+/**
+ * Update a project in the table
+ * @param {Number} id project id
+ */
+function editProject(id) {
+	// Replace title with textbox
+	const selectedProject = document.querySelector(
+		`.project-table tr td[data-id="${id}"]`
+	);
+
+	// If a user dblclick's while editing a title, return
+	if (selectedProject === null) {
+		return;
+	}
+
+	const projectTitle = selectedProject.textContent;
+	console.log(projectTitle);
+}
+
+export { userInterface, showTodos, createProject, editProject };
