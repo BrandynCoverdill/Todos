@@ -1,4 +1,4 @@
-import { userInterface, showTodos, createProject } from './Interface';
+import {userInterface, showTodos, createProject} from './Interface';
 
 // Show the UI of the app
 document.body.appendChild(userInterface());

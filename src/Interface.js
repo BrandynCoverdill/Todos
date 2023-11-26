@@ -201,7 +201,7 @@ function updateProjects() {
 		const td = document.createElement('td');
 
 		td.textContent = project.getTitle;
-		tr.dataset.id = project.getId;
+		td.dataset.id = project.getId;
 
 		td.style.cssText = `
             font-size: 1.25em;
@@ -274,7 +274,7 @@ function showTodos(id) {
 		title.textContent = todo.getTitle;
 		date.textContent = `Due: ${todo.getDueDate}`;
 
-		tr.dataset.id = todo.id;
+		td.dataset.id = todo.id;
 
 		td.style.cssText = `
             white-space: nowrap;
@@ -346,7 +346,7 @@ function createProject() {
 	updateProjects();
 	// Replace the title with a textbox with the title highlighted
 	const selectedProject = document.querySelector(
-		`.project-table tr[data-id="${projectId}"]`
+		`.project-table tr td[data-id="${projectId}"]`
 	);
 	selectedProject.textContent = '';
 
@@ -369,19 +369,21 @@ function createProject() {
 				Project.removeProject(projectId);
 				updateProjects();
 				// Add click events for each project title
-				// TODO
-
+				const projects = document.querySelectorAll('.project-table tr > td');
+				projects.forEach((project) => {
+					project.addEventListener('click', (e) => {
+						showTodos(e.target.dataset.id);
+					});
+				});
 				return;
 			}
 			// If validation is good, replace input with title given
 			newProject.setTitle = titleInput.value.trim();
 			updateProjects();
 			// Add click events for each project title
-			// TODO
-			const projects = document.querySelectorAll('.project-table > tr');
+			const projects = document.querySelectorAll('.project-table tr > td');
 			projects.forEach((project) => {
 				project.addEventListener('click', (e) => {
-					console.log(e.target.dataset.id);
 					showTodos(e.target.dataset.id);
 				});
 			});
@@ -391,4 +393,4 @@ function createProject() {
 	});
 }
 
-export { userInterface, showTodos, createProject };
+export {userInterface, showTodos, createProject};
