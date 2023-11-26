@@ -2,6 +2,7 @@ import 'normalize.css';
 import './styles.css';
 import Todo from './Todo';
 import Project from './Project';
+import Modal from './Modal';
 
 /**
  * Returns the ui for the application
@@ -292,6 +293,22 @@ function showTodos(id) {
 	`;
 	todoh2.textContent = `${Project.getObjectTitle(id)}`;
 	newTodoBtn.textContent = '+ new todo';
+
+	// Add event listener to add a new todo in a project
+	newTodoBtn.addEventListener('click', (e) => {
+		e.preventDefault();
+
+		// Disable everything but the modal
+		document.body.style.cssText = `
+			background: rgba(0, 0, 0, 0.15);
+			pointer-events: none;
+			user-select: none;
+		`;
+
+		// Show Modal
+		Modal();
+	});
+
 	deleteProjectBtn.textContent = 'Delete Project';
 	todoh2.style.cssText = `
 		margin: 0;
