@@ -217,7 +217,7 @@ function updateProjects(id) {
 	const projects = document.querySelectorAll('.project-table tr > td');
 	projects.forEach((project) => {
 		project.addEventListener('click', (e) => {
-			if (e.target.dataset.id === id) {
+			if (e.target.dataset.id === +id) {
 				return;
 			}
 			e.preventDefault();
@@ -450,8 +450,8 @@ function createProject() {
  * @param {Number} id project id
  */
 function editProject(id) {
-	// Replace title with textbox
-	const selectedProject = document.querySelector(
+	// Grab the selected element
+	let selectedProject = document.querySelector(
 		`.project-table tr td[data-id="${id}"]`
 	);
 
@@ -460,8 +460,48 @@ function editProject(id) {
 		return;
 	}
 
+	// Grab the text from the element
 	const projectTitle = selectedProject.textContent;
-	console.log(projectTitle);
+
+	// Replace the text with a textbox
+	selectedProject.textContent = '';
+
+	const titleInput = document.createElement('input');
+	titleInput.setAttribute('type', 'text');
+	titleInput.value = projectTitle;
+	titleInput.style.cssText = `
+		width: 100%;
+    `;
+	selectedProject.appendChild(titleInput);
+	titleInput.focus();
+	titleInput.select();
+
+	// Add event for when the user presses enter
+	selectedProject.addEventListener('keydown', (e) => {
+		if (e.keyCode === 13 || e.key === 'Enter') {
+			// Validate title entered by user
+			if (titleInput.value.trim() === '') {
+				// Do not update name and replace textbox with title
+				selectedProject.removeChild(titleInput);
+				updateProjects(id);
+				return;
+			}
+			// If validation is good, replace input with title given
+
+			// set title for project object
+			Project.projects().map((project) => {
+				if (project.id === +id) {
+					project.title = titleInput.value;
+				}
+				return project;
+			});
+			selectedProject.removeChild(titleInput);
+			updateProjects(id);
+
+			// Show todos of this newly created project
+			showTodos(id);
+		}
+	});
 }
 
 export { userInterface, showTodos, createProject, editProject };
