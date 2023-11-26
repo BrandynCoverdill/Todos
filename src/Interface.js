@@ -212,6 +212,14 @@ function updateProjects() {
 		tr.appendChild(td);
 		projectTbl.appendChild(tr);
 	});
+
+	// Add click events for each project title
+	const projects = document.querySelectorAll('.project-table tr > td');
+	projects.forEach((project) => {
+		project.addEventListener('click', (e) => {
+			showTodos(e.target.dataset.id);
+		});
+	});
 }
 
 /**
@@ -219,6 +227,9 @@ function updateProjects() {
  * @param {Number} id project id
  */
 function showTodos(id) {
+	// Highlight the project in the table when selected
+	updateProjects();
+
 	// Todo header elements
 	const todoh2 = document.createElement('h2');
 	const todoHeader = document.createElement('div');
@@ -375,27 +386,12 @@ function createProject() {
 			if (titleInput.value.trim() === '') {
 				Project.removeProject(projectId);
 				updateProjects();
-
-				// Add click events for each project title
-				const projects = document.querySelectorAll('.project-table tr > td');
-				projects.forEach((project) => {
-					project.addEventListener('click', (e) => {
-						showTodos(e.target.dataset.id);
-					});
-				});
 				return;
 			}
 			// If validation is good, replace input with title given
 			newProject.setTitle = titleInput.value.trim();
 			updateProjects();
 
-			// Add click events for each project title
-			const projects = document.querySelectorAll('.project-table tr > td');
-			projects.forEach((project) => {
-				project.addEventListener('click', (e) => {
-					showTodos(e.target.dataset.id);
-				});
-			});
 			// Show todos of this newly created project
 			showTodos(projectId);
 		}
