@@ -549,7 +549,7 @@ function deleteProject(id) {
 		// Update Projects
 		updateProjects();
 
-		// Make Todo table blank
+		// Make Todo container blank
 		const todoContainer = document.querySelector('.todo-container');
 		todoContainer.textContent = '';
 	}
