@@ -314,8 +314,13 @@ function modal(view, id) {
         		`;
 
 				// Update todos
-				showTodos(id);
-				console.log(Todo.todos());
+				/**
+				 * // BUG
+				 * When trying to change the todo.isCompleted value,
+				 * the array is staying the same and not updating.
+				 * Very confused on this.
+				 */
+				showTodos(todo.inProject);
 			});
 
 			editTodoBtn.textContent = 'Edit';
@@ -347,7 +352,26 @@ function modal(view, id) {
 			// Event to delete a todo from a project
 			deleteTodoBtn.addEventListener('click', (e) => {
 				e.preventDefault();
-				// TODO: Delete Todo
+				// Delete Todo
+				const confirmation = confirm(
+					'Are you sure you want to delete this todo?'
+				);
+				if (confirmation) {
+					Todo.removeTodo(todo.id);
+
+					// Remove modal
+					document.body.removeChild(document.querySelector('.modal'));
+
+					// Update styles on body element
+					document.body.style.cssText = `
+            		opacity: 1;
+					pointer-events: auto;
+					user-select: auto;
+        		`;
+
+					// Update todos
+					showTodos(+todo.inProject);
+				}
 			});
 
 			closeBtn.textContent = 'Close';
