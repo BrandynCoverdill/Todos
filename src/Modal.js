@@ -314,12 +314,6 @@ function modal(view, id) {
         		`;
 
 				// Update todos
-				/**
-				 * // BUG
-				 * When trying to change the todo.isCompleted value,
-				 * the array is staying the same and not updating.
-				 * Very confused on this.
-				 */
 				showTodos(todo.inProject);
 			});
 

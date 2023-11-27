@@ -61,12 +61,13 @@ export default class Todo {
 	}
 
 	static markComplete(item) {
-		Todo.todos().map((element) => {
-			if (+item.id === +element.id) {
+		const temp = todos.map((element) => {
+			if (element.id === item.id) {
 				element.isCompleted = !element.isCompleted;
 			}
 			return element;
 		});
+		todos = temp;
 	}
 
 	// Accessor Methods

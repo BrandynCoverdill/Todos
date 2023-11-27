@@ -334,6 +334,12 @@ function showTodos(id) {
 		const title = document.createElement('span');
 		const date = document.createElement('span');
 
+		// If the todo is completed, style the elements
+		if (todo.isCompleted) {
+			title.classList.add('completed');
+			date.classList.add('completed');
+		}
+
 		title.textContent = todo.getTitle;
 		date.textContent = `Due: ${todo.getDueDate}`;
 
