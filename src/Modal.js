@@ -63,29 +63,30 @@ function modal(view, id) {
 	});
 
 	// Depending on the argument being passed to modal...
+	// Elements for each modal argument being passed
+	let inputDiv = document.createElement('div');
+	let title = document.createElement('label');
+	let titleInput = document.createElement('input');
+	let titleError = document.createElement('p');
+	let date = document.createElement('label');
+	let dateInput = document.createElement('input');
+	let priority = document.createElement('label');
+	let priorityRadioDiv = document.createElement('div');
+	let priorityLabelLow = document.createElement('label');
+	let priorityInputLow = document.createElement('input');
+	let priorityLabelMedium = document.createElement('label');
+	let priorityInputMedium = document.createElement('input');
+	let priorityLabelHigh = document.createElement('label');
+	let priorityInputHigh = document.createElement('input');
+	let desc = document.createElement('label');
+	let descInput = document.createElement('textarea');
+	let notes = document.createElement('label');
+	let notesInput = document.createElement('textarea');
 	switch (view) {
 		// Creating a new todo
 		case 'create':
-			// Create elements for the modal
-			const addTodoBtn = document.createElement('button');
-			const inputDiv = document.createElement('div');
-			const title = document.createElement('label');
-			const titleInput = document.createElement('input');
-			const titleError = document.createElement('p');
-			const date = document.createElement('label');
-			const dateInput = document.createElement('input');
-			const priority = document.createElement('label');
-			const priorityRadioDiv = document.createElement('div');
-			const priorityLabelLow = document.createElement('label');
-			const priorityInputLow = document.createElement('input');
-			const priorityLabelMedium = document.createElement('label');
-			const priorityInputMedium = document.createElement('input');
-			const priorityLabelHigh = document.createElement('label');
-			const priorityInputHigh = document.createElement('input');
-			const desc = document.createElement('label');
-			const descInput = document.createElement('textarea');
-			const notes = document.createElement('label');
-			const notesInput = document.createElement('textarea');
+			// Add elements specific for this argument
+			let addTodoBtn = document.createElement('button');
 
 			// Add content for the elements
 			closeBtn.textContent = 'Cancel';
@@ -141,8 +142,6 @@ function modal(view, id) {
 						false,
 						+id
 					);
-					console.log({ todo });
-					console.log(Todo.todos());
 				} else {
 					const todo = new Todo(
 						titleValue,
@@ -273,13 +272,143 @@ function modal(view, id) {
 
 		// Viewing a todo
 		case 'view':
+			let todo = Todo.getTodo(id);
 			// Create elements for the modal
+			let markComplete = document.createElement('button');
+			let deleteTodoBtn = document.createElement('button');
+			let editTodoBtn = document.createElement('button');
 
 			// Add content for the elements
-			closeBtn.textContent = 'Cancel';
+			markComplete.style.cssText = `
+				cursor: pointer;
+				background: #50AAF7;
+				color: #0D2BA6;
+				border: 2px solid #0C7DED;
+				position: absolute;
+				bottom: 10px;
+				left: 10px;
+			`;
+			switch (todo.getIsCompleted) {
+				case true:
+					markComplete.textContent = 'Mark Incomplete';
+					break;
+				case false:
+					markComplete.textContent = 'Mark Complete';
+					break;
+				default:
+					break;
+			}
+			// Event to mark a todo as complete
+			markComplete.addEventListener('click', (e) => {
+				e.preventDefault();
+				// TODO: Make todo complete
+			});
 
-			// Append the elements to the container
+			editTodoBtn.textContent = 'Edit';
+			editTodoBtn.style.cssText = `
+				cursor: pointer;
+				background: #50AAF7;
+				color: #0D2BA6;
+				border: 2px solid #0C7DED;
+				position: absolute;
+				bottom: 10px;
+				left: 140px;
+			`;
+			// Event to edit a todo
+			editTodoBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				// TODO: Edit Todo
+			});
 
+			deleteTodoBtn.textContent = 'Delete Todo';
+			deleteTodoBtn.style.cssText = `
+				cursor: pointer;
+				background: #50AAF7;
+				color: #0D2BA6;
+				border: 2px solid #0C7DED;
+				position: absolute;
+				top: 10px;
+				right: 10px;
+			`;
+			// Event to delete a todo from a project
+			deleteTodoBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				// TODO: Delete Todo
+			});
+
+			closeBtn.textContent = 'Close';
+
+			inputDiv.style.cssText = `
+				display: flex;
+				flex-direction: column;
+				overflow: auto;
+				margin-block-end: 2em;
+			`;
+
+			title.textContent = 'Todo Name:';
+			titleInput.style.cssText = `
+				width: 10em;
+				margin-block-end: 10px;
+			`;
+			titleInput.setAttribute('disabled', 'true');
+			titleInput.value = todo.getTitle;
+
+			date.textContent = 'Due Date:';
+			dateInput.setAttribute('disabled', 'true');
+			dateInput.style.cssText = `
+				width: 10em;
+				margin-block-end: 10px;
+			`;
+			dateInput.value = todo.getDueDate;
+
+			switch (todo.getPriority) {
+				case 1:
+					priority.textContent = `Priority: ${'Low'}`;
+					break;
+				case 2:
+					priority.textContent = `Priority: ${'Medium'}`;
+					break;
+				case 3:
+					priority.textContent = `Priority: ${'High'}`;
+					break;
+				default:
+					break;
+			}
+
+			priority.style.cssText = `
+				margin-block-end: 10px;
+			`;
+
+			desc.textContent = 'Description:';
+			descInput.style.cssText = `
+				resize: vertical;
+				margin-block-end: 10px;
+			`;
+			descInput.setAttribute('disabled', 'true');
+			descInput.value = todo.getDesc;
+
+			notes.textContent = 'Notes:';
+			notesInput.style.cssText = `
+				resize: vertical;
+				margin-block-end: 10px;
+			`;
+			notesInput.setAttribute('disabled', 'true');
+			notesInput.value = todo.getNotes;
+
+			// Append the elements to the document
+			inputDiv.appendChild(title);
+			inputDiv.appendChild(titleInput);
+			inputDiv.appendChild(date);
+			inputDiv.appendChild(dateInput);
+			inputDiv.appendChild(priority);
+			inputDiv.appendChild(desc);
+			inputDiv.appendChild(descInput);
+			inputDiv.appendChild(notes);
+			inputDiv.appendChild(notesInput);
+			container.appendChild(inputDiv);
+			container.appendChild(markComplete);
+			container.appendChild(editTodoBtn);
+			container.appendChild(deleteTodoBtn);
 			break;
 
 		// Editing a todo

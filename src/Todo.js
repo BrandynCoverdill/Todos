@@ -35,6 +35,14 @@ export default class Todo {
 		return todos;
 	}
 
+	// Static method to get a todo from todos
+	static getTodo(id) {
+		const todo = todos.filter((todo) => {
+			return todo.id === +id;
+		});
+		return todo[0];
+	}
+
 	// Static method to remove a todo
 	static removeTodo(id) {
 		const temp = todos.filter((element) => {
@@ -120,14 +128,6 @@ export default class Todo {
 
 	set setNotes(value) {
 		this.notes = value;
-	}
-
-	set setIsCompleted(value) {
-		if (value) {
-			this.isCompleted = false;
-		} else {
-			this.isCompleted = true;
-		}
 	}
 
 	set setInProject(value) {

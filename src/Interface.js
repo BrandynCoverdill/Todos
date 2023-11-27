@@ -33,11 +33,13 @@ function userInterface() {
 	// Temp todo objects
 	const todo1 = new Todo(
 		'Bake supper for family tonight',
-		'',
+		'Need to bake spaghetti for family of 3',
 		new Date().toLocaleDateString(),
 		3,
-		'',
-		false,
+		`Recipe for spaghetti:
+		...
+		...`,
+		true,
 		defaultProject.getId
 	);
 	const todo2 = new Todo(
@@ -226,7 +228,7 @@ function updateProjects(id) {
 		});
 	});
 
-	// TODO: Add dblclick event for each project title
+	// dblclick event for editing a project
 	projects.forEach((project) => {
 		project.addEventListener('dblclick', (e) => {
 			editProject(e.target.dataset.id);
@@ -415,6 +417,12 @@ function showTodos(id) {
 		td.appendChild(date);
 		tr.appendChild(td);
 		todoTbl.appendChild(tr);
+
+		// Click event for viewing a todo when clicked on
+		tr.addEventListener('click', (e) => {
+			e.preventDefault();
+			Modal('view', td.dataset.id);
+		});
 	});
 
 	// Style table
