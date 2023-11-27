@@ -307,9 +307,6 @@ function showTodos(id) {
 
 		// Show Modal
 		Modal('create', id);
-
-		// Update todos list
-		// updateTodos(id); // TODO: Doesn't wait for modal to be finished...
 	});
 
 	deleteProjectBtn.textContent = 'Delete Project';

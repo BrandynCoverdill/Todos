@@ -100,7 +100,7 @@ function modal(view, id) {
 				bottom: 10px;
 				left: 10px;
 			`;
-			// Add new todo to the project // TODO
+			// Add new todo to the project
 			addTodoBtn.addEventListener('click', (e) => {
 				e.preventDefault();
 
