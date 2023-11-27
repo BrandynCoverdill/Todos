@@ -4,7 +4,7 @@ import Todo from './Todo';
 import { showTodos } from './Interface';
 
 /**
- * Returns this UI when the user adds a new todo, edits a todo, or views a todo
+ * Returns this UI when the user adds a new todo or views a todo
  */
 function modal(view, id) {
 	const parent = document.createElement('div');
@@ -301,7 +301,21 @@ function modal(view, id) {
 			// Event to mark a todo as complete
 			markComplete.addEventListener('click', (e) => {
 				e.preventDefault();
-				// TODO: Make todo complete
+				Todo.markComplete(todo);
+
+				// Remove modal
+				document.body.removeChild(document.querySelector('.modal'));
+
+				// Update styles on body element
+				document.body.style.cssText = `
+            		opacity: 1;
+					pointer-events: auto;
+					user-select: auto;
+        		`;
+
+				// Update todos
+				showTodos(id);
+				console.log(Todo.todos());
 			});
 
 			editTodoBtn.textContent = 'Edit';
@@ -409,17 +423,6 @@ function modal(view, id) {
 			container.appendChild(markComplete);
 			container.appendChild(editTodoBtn);
 			container.appendChild(deleteTodoBtn);
-			break;
-
-		// Editing a todo
-		case 'edit':
-			// Create elements for the modal
-
-			// Add content for the elements
-			closeBtn.textContent = 'Cancel';
-
-			// Append the elements to the container
-
 			break;
 		default:
 			break;

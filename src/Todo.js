@@ -60,6 +60,15 @@ export default class Todo {
 		});
 	}
 
+	static markComplete(item) {
+		Todo.todos().map((element) => {
+			if (+item.id === +element.id) {
+				element.isCompleted = !element.isCompleted;
+			}
+			return element;
+		});
+	}
+
 	// Accessor Methods
 	get getTitle() {
 		if (this.title.trim() !== '') {

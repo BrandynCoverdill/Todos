@@ -15,59 +15,15 @@ function userInterface() {
 	// Default project object
 	const defaultProject = createDefaultProject();
 
-	// Default todo object
+	// Temp todo object
 	const defaultTodo = new Todo(
-		'Untitled Todo',
-		'',
+		'Drink Water',
+		'Description of todo',
 		undefined,
-		1,
-		'',
-		false,
-		defaultProject.getId
-	);
-
-	// Temp project objects
-	const project1 = new Project('Project 1');
-	const project2 = new Project('Project 2');
-
-	// Temp todo objects
-	const todo1 = new Todo(
-		'Bake supper for family tonight',
-		'Need to bake spaghetti for family of 3',
-		new Date().toLocaleDateString(),
-		3,
-		`Recipe for spaghetti:
-		...
-		...`,
+		2,
+		'Notes for todo',
 		true,
 		defaultProject.getId
-	);
-	const todo2 = new Todo(
-		'Drink water',
-		'',
-		undefined,
-		2,
-		'',
-		false,
-		defaultProject.getId
-	);
-	const todo3 = new Todo(
-		'Mow the lawn for extra $$$',
-		'',
-		undefined,
-		1,
-		'',
-		false,
-		project1.getId
-	);
-	const todo4 = new Todo(
-		'Call Rebecca',
-		'',
-		undefined,
-		2,
-		'',
-		false,
-		project1.getId
 	);
 
 	// Append elements to the parent element.
