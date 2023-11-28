@@ -70,6 +70,56 @@ export default class Todo {
 		todos = temp;
 	}
 
+	static setTitle(item, value) {
+		const temp = todos.map((element) => {
+			if (item.id === element.id) {
+				element.title = value;
+			}
+			return element;
+		});
+		todos = temp;
+	}
+
+	static setDueDate(item, value) {
+		const temp = todos.map((element) => {
+			if (item.id === element.id) {
+				element.dueDate = value;
+			}
+			return element;
+		});
+		todos = temp;
+	}
+
+	static setPriority(item, value) {
+		const temp = todos.map((element) => {
+			if (item.id === element.id) {
+				element.priority = value;
+			}
+			return element;
+		});
+		todos = temp;
+	}
+
+	static setDesc(item, value) {
+		const temp = todos.map((element) => {
+			if (item.id === element.id) {
+				element.desc = value;
+			}
+			return element;
+		});
+		todos = temp;
+	}
+
+	static setNotes(item, value) {
+		const temp = todos.map((element) => {
+			if (item.id === element.id) {
+				element.notes = value;
+			}
+			return element;
+		});
+		todos = temp;
+	}
+
 	// Accessor Methods
 	get getTitle() {
 		if (this.title.trim() !== '') {

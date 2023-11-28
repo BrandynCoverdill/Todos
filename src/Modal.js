@@ -152,8 +152,6 @@ function modal(view, id) {
 						false,
 						+id
 					);
-					console.log({ todo });
-					console.log(Todo.todos());
 				}
 
 				// Remove modal
@@ -331,6 +329,176 @@ function modal(view, id) {
 			editTodoBtn.addEventListener('click', (e) => {
 				e.preventDefault();
 				// TODO: Edit Todo
+
+				// Make inputs active
+				titleInput.removeAttribute('disabled');
+				dateInput.removeAttribute('disabled');
+				descInput.removeAttribute('disabled');
+				notesInput.removeAttribute('disabled');
+
+				// Remove buttons and add save/cancel button
+				container.removeChild(markComplete);
+				container.removeChild(deleteTodoBtn);
+				container.removeChild(editTodoBtn);
+				container.removeChild(closeBtn);
+				const updateTodoBtn = document.createElement('button');
+				const cancelUpdateTodoBtn = document.createElement('button');
+				container.appendChild(updateTodoBtn);
+				container.appendChild(cancelUpdateTodoBtn);
+
+				// Style buttons
+				updateTodoBtn.style.cssText = `
+					cursor: pointer;
+					background: #50AAF7;
+					color: #0D2BA6;
+					border: 2px solid #0C7DED;
+					position: absolute;
+					bottom: 10px;
+					left: 10px;
+				`;
+				updateTodoBtn.textContent = 'Update Todo';
+
+				// Event for updating information about a todo // TODO
+				updateTodoBtn.addEventListener('click', (e) => {
+					e.preventDefault();
+
+					// Get data from the user for a new todo
+					const titleValue = titleInput.value.trim();
+					const dateValue = new Date(
+						dateInput.value.replace(/-/g, '/').replace(/T.+/, '')
+					).toLocaleDateString();
+					const priorityValue = document.querySelector(
+						'input[name="priority"]:checked'
+					).value;
+					const descValue = descInput.value.trim();
+					const notesValue = notesInput.value.trim();
+
+					// Change values of todo
+					Todo.setTitle(todo, titleValue);
+					if (dateValue === 'Invalid Date') {
+						Todo.setDueDate(todo, undefined);
+					} else {
+						Todo.setDueDate(todo, dateValue);
+					}
+					Todo.setPriority(todo, priorityValue);
+					Todo.setDesc(todo, descValue);
+					Todo.setNotes(todo, notesValue);
+
+					// After updating, return to view of the todo
+					document.body.removeChild(document.querySelector('.modal'));
+
+					// Update styles on body element
+					document.body.style.cssText = `
+            		opacity: 1;
+					pointer-events: auto;
+					user-select: auto;
+        		`;
+
+					// Update todos
+					showTodos(+todo.inProject);
+
+					// Show view modal
+					modal('view', todo.id);
+				});
+
+				cancelUpdateTodoBtn.style.cssText = `
+					cursor: pointer;
+					background: #50AAF7;
+					color: #0D2BA6;
+					border: 2px solid #0C7DED;
+					position: absolute;
+					bottom: 10px;
+					right: 10px;
+				`;
+				cancelUpdateTodoBtn.textContent = 'Cancel';
+
+				// Event for canceling an update for a todo
+				cancelUpdateTodoBtn.addEventListener('click', (e) => {
+					e.preventDefault();
+					document.body.removeChild(document.querySelector('.modal'));
+
+					// Update styles on body element
+					document.body.style.cssText = `
+            		opacity: 1;
+					pointer-events: auto;
+					user-select: auto;
+        		`;
+
+					// Update todos
+					showTodos(+todo.inProject);
+
+					// Show view modal
+					modal('view', todo.id);
+				});
+
+				// Style date input
+				dateInput.setAttribute('type', 'date');
+				if (todo.dueDate !== undefined) {
+					dateInput.value = todo.getDueDate.replace(
+						/(\d\d)\/(\d\d)\/(\d{4})/,
+						'$3-$1-$2'
+					);
+				}
+
+				// Style priority
+				priority.textContent = 'Priority:';
+				priorityInputLow.setAttribute('type', 'radio');
+				priorityInputLow.setAttribute('name', 'priority');
+				priorityInputLow.setAttribute('value', '1');
+				priorityInputLow.setAttribute('id', 'lowPriority');
+				priorityInputLow.style.cssText = `
+				margin-inline-end: 5px;
+			`;
+				priorityLabelLow.setAttribute('for', 'lowPriority');
+				priorityLabelLow.textContent = 'Low';
+
+				priorityInputMedium.setAttribute('type', 'radio');
+				priorityInputMedium.setAttribute('name', 'priority');
+				priorityInputMedium.setAttribute('value', '2');
+				priorityInputMedium.setAttribute('id', 'mediumPriority');
+				priorityInputMedium.style.cssText = `
+				margin-inline-end: 5px;
+			`;
+				priorityLabelMedium.setAttribute('for', 'mediumPriority');
+				priorityLabelMedium.textContent = 'Medium';
+
+				priorityInputHigh.setAttribute('type', 'radio');
+				priorityInputHigh.setAttribute('name', 'priority');
+				priorityInputHigh.setAttribute('value', '3');
+				priorityInputHigh.setAttribute('id', 'highPriority');
+				priorityInputHigh.style.cssText = `
+				margin-inline-end: 5px;
+			`;
+				priorityLabelHigh.setAttribute('for', 'highPriority');
+				priorityLabelHigh.textContent = 'High';
+				priorityRadioDiv.style.cssText = `
+				margin-block-end: 10px;
+			`;
+
+				switch (+todo.priority) {
+					case 1:
+						priorityInputLow.setAttribute('checked', 'true');
+						break;
+					case 2:
+						priorityInputMedium.setAttribute('checked', 'true');
+						break;
+					case 3:
+						priorityInputHigh.setAttribute('checked', 'true');
+						break;
+
+					default:
+						break;
+				}
+
+				// Append priority selection
+				priorityRadioDiv.appendChild(priorityInputLow);
+				priorityRadioDiv.appendChild(priorityLabelLow);
+				priorityRadioDiv.appendChild(document.createElement('br'));
+				priorityRadioDiv.appendChild(priorityInputMedium);
+				priorityRadioDiv.appendChild(priorityLabelMedium);
+				priorityRadioDiv.appendChild(document.createElement('br'));
+				priorityRadioDiv.appendChild(priorityInputHigh);
+				priorityRadioDiv.appendChild(priorityLabelHigh);
 			});
 
 			deleteTodoBtn.textContent = 'Delete Todo';
@@ -393,7 +561,7 @@ function modal(view, id) {
 			`;
 			dateInput.value = todo.getDueDate;
 
-			switch (todo.getPriority) {
+			switch (+todo.getPriority) {
 				case 1:
 					priority.textContent = `Priority: ${'Low'}`;
 					break;
@@ -433,6 +601,7 @@ function modal(view, id) {
 			inputDiv.appendChild(date);
 			inputDiv.appendChild(dateInput);
 			inputDiv.appendChild(priority);
+			inputDiv.appendChild(priorityRadioDiv);
 			inputDiv.appendChild(desc);
 			inputDiv.appendChild(descInput);
 			inputDiv.appendChild(notes);

@@ -355,7 +355,7 @@ function showTodos(id) {
         `;
 
 		// Color the todo's depending on priority
-		switch (todo.getPriority) {
+		switch (+todo.getPriority) {
 			case 1:
 				// No coloring
 				break;
