@@ -15,17 +15,6 @@ function userInterface() {
 	// Default project object
 	const defaultProject = createDefaultProject();
 
-	// Temp todo object
-	const defaultTodo = new Todo(
-		'Drink Water',
-		'Description of todo',
-		undefined,
-		2,
-		'Notes for todo',
-		true,
-		defaultProject.getId
-	);
-
 	// Append elements to the parent element.
 	parent.appendChild(header());
 	parent.appendChild(content());
