@@ -2,7 +2,7 @@ import Error from './ErrorMessage';
 
 // Global counter for project Ids
 // Ids for Projects
-let count = 0;
+let count = +localStorage.getItem('project-id-count');
 
 // Array of project objects
 let projects = [];
@@ -12,9 +12,10 @@ let projects = [];
  */
 export default class Project {
 	constructor(title = 'Untitled Project') {
-		this.id = count++;
+		this.id = count;
 		this.title = title;
 		projects.push(this);
+		localStorage.setItem('project-id-count', JSON.stringify(++count));
 	}
 
 	// Static method to return projects array
@@ -22,20 +23,29 @@ export default class Project {
 		return projects;
 	}
 
+	static setProjectArray(value) {
+		projects = value;
+	}
+
 	// Static method to return an object's title from projects
 	static getObjectTitle(id) {
-		const project = projects.filter((element) => {
-			return element.id === +id;
-		});
+		const project = JSON.parse(localStorage.getItem('projects')).filter(
+			(element) => {
+				return +element.id === +id;
+			}
+		);
 		return project[0].title;
 	}
 
 	// Static method to remove object from projects array
 	static removeProject(id) {
-		const temp = projects.filter((project) => {
-			return +id !== project.id;
-		});
+		const temp = JSON.parse(localStorage.getItem('projects')).filter(
+			(project) => {
+				return +id !== project.id;
+			}
+		);
 		projects = temp;
+		localStorage.setItem('projects', JSON.stringify(projects));
 	}
 
 	// Accessor Methods

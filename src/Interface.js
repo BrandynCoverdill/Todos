@@ -12,8 +12,15 @@ function userInterface() {
 	// Create a parent element that contains all dom elements
 	const parent = document.createElement('div');
 
-	// Default project object
-	const defaultProject = createDefaultProject();
+	// Create default project if the user visits webpage for first time
+	if (localStorage.getItem('has-visited') === null) {
+		localStorage.setItem('has-visited', 1);
+		const defaultProject = createDefaultProject();
+		localStorage.setItem('projects', JSON.stringify(Project.projects()));
+		localStorage.setItem('project-id-count', 1);
+		localStorage.setItem('todos', JSON.stringify(Todo.todos()));
+		localStorage.setItem('todo-id-count', 1);
+	}
 
 	// Append elements to the parent element.
 	parent.appendChild(header());
@@ -79,12 +86,12 @@ function content() {
 	const todoDiv = document.createElement('div');
 
 	// If there are any projects, add to projectTbl
-	Project.projects().forEach((project) => {
+	JSON.parse(localStorage.getItem('projects')).forEach((project) => {
 		const tr = document.createElement('tr');
 		const td = document.createElement('td');
 
-		td.textContent = project.getTitle;
-		td.dataset.id = project.getId;
+		td.textContent = project.title;
+		td.dataset.id = project.id;
 
 		td.style.cssText = `
             font-size: 1.25em;
@@ -144,12 +151,12 @@ function updateProjects(id) {
 
 	projectTbl.textContent = '';
 
-	Project.projects().forEach((project) => {
+	JSON.parse(localStorage.getItem('projects')).forEach((project) => {
 		const tr = document.createElement('tr');
 		const td = document.createElement('td');
 
-		td.textContent = project.getTitle;
-		td.dataset.id = project.getId;
+		td.textContent = project.title;
+		td.dataset.id = project.id;
 
 		td.style.cssText = `
             font-size: 1.25em;
@@ -301,8 +308,8 @@ function showTodos(id) {
 	const todoTbl = document.createElement('table');
 
 	// Grab todos only relavent to project
-	const temp = Todo.todos().filter((todo) => {
-		return todo.inProject == id;
+	const temp = JSON.parse(localStorage.getItem('todos')).filter((todo) => {
+		return +todo.inProject == id;
 	});
 
 	// If there are no todos in a project
@@ -329,10 +336,14 @@ function showTodos(id) {
 			date.classList.add('completed');
 		}
 
-		title.textContent = todo.getTitle;
-		date.textContent = `Due: ${todo.getDueDate}`;
+		title.textContent = todo.title;
+		if (todo.dueDate === undefined) {
+			date.textContent = 'No Due Date';
+		} else {
+			date.textContent = `Due: ${todo.dueDate}`;
+		}
 
-		td.dataset.id = todo.id;
+		td.dataset.id = +todo.id;
 
 		td.style.cssText = `
             white-space: nowrap;
@@ -344,7 +355,7 @@ function showTodos(id) {
         `;
 
 		// Color the todo's depending on priority
-		switch (+todo.getPriority) {
+		switch (+todo.priority) {
 			case 1:
 				// No coloring
 				break;
@@ -402,8 +413,15 @@ function createDefaultProject() {
  * Creates a new project from the user event
  */
 function createProject() {
+	try {
+		Project.setProjectArray(JSON.parse(localStorage.getItem('projects')));
+	} catch (e) {
+		console.log(e);
+	}
+
 	// Create Default project
 	const newProject = createDefaultProject();
+	localStorage.setItem('projects', JSON.stringify(Project.projects()));
 
 	// Track project id
 	const projectId = newProject.getId;
@@ -438,6 +456,7 @@ function createProject() {
 			}
 			// If validation is good, replace input with title given
 			newProject.setTitle = titleInput.value.trim();
+			localStorage.setItem('projects', JSON.stringify(Project.projects()));
 			updateProjects(projectId);
 
 			// Show todos of this newly created project
@@ -490,12 +509,13 @@ function editProject(id) {
 			// If validation is good, replace input with title given
 
 			// set title for project object
-			Project.projects().map((project) => {
-				if (project.id === +id) {
+			let temp = JSON.parse(localStorage.getItem('projects')).map((project) => {
+				if (+project.id === +id) {
 					project.title = titleInput.value;
 				}
 				return project;
 			});
+			localStorage.setItem('projects', JSON.stringify(temp));
 			selectedProject.removeChild(titleInput);
 			updateProjects(id);
 
@@ -531,4 +551,4 @@ function deleteProject(id) {
 	}
 }
 
-export { userInterface, showTodos, createProject, editProject };
+export {userInterface, showTodos, createProject, editProject};

@@ -19,6 +19,7 @@
 		"webpack-cli": "^5.1.4"
 	},
 	"dependencies": {
+		"localstorage": "^1.0.1",
 		"normalize.css": "^8.0.1"
 	}
 }

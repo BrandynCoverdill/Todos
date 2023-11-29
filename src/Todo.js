@@ -1,7 +1,7 @@
 import Error from './ErrorMessage';
 
 // Id for todo objects
-let count = 0;
+let count = +localStorage.getItem('todo-id-count');
 
 // Array of todo objects
 let todos = [];
@@ -19,7 +19,7 @@ export default class Todo {
 		isCompleted = false,
 		inProject
 	) {
-		this.id = count++;
+		this.id = count;
 		this.title = title;
 		this.desc = desc;
 		this.dueDate = dueDate;
@@ -28,6 +28,7 @@ export default class Todo {
 		this.isCompleted = isCompleted;
 		this.inProject = inProject;
 		todos.push(this);
+		localStorage.setItem('todo-id-count', JSON.parse(++count));
 	}
 
 	// Static method to return todos array
@@ -35,9 +36,13 @@ export default class Todo {
 		return todos;
 	}
 
+	static setTodoArray(value) {
+		todos = value;
+	}
+
 	// Static method to get a todo from todos
 	static getTodo(id) {
-		const todo = todos.filter((todo) => {
+		const todo = JSON.parse(localStorage.getItem('todos')).filter((todo) => {
 			return todo.id === +id;
 		});
 		return todo[0];
@@ -45,10 +50,11 @@ export default class Todo {
 
 	// Static method to remove a todo
 	static removeTodo(id) {
-		const temp = todos.filter((element) => {
+		const temp = JSON.parse(localStorage.getItem('todos')).filter((element) => {
 			return +id !== element.id;
 		});
 		todos = temp;
+		localStorage.setItem('todos', JSON.stringify(temp));
 	}
 
 	// Static method to remove all todos of projectId
@@ -61,63 +67,69 @@ export default class Todo {
 	}
 
 	static markComplete(item) {
-		const temp = todos.map((element) => {
-			if (element.id === item.id) {
+		const temp = JSON.parse(localStorage.getItem('todos')).map((element) => {
+			if (+element.id === item.id) {
 				element.isCompleted = !element.isCompleted;
 			}
 			return element;
 		});
 		todos = temp;
+		localStorage.setItem('todos', JSON.stringify(temp));
 	}
 
 	static setTitle(item, value) {
-		const temp = todos.map((element) => {
-			if (item.id === element.id) {
+		const temp = JSON.parse(localStorage.getItem('todos')).map((element) => {
+			if (item.id === +element.id) {
 				element.title = value;
 			}
 			return element;
 		});
 		todos = temp;
+		localStorage.setItem('todos', JSON.stringify(temp));
 	}
 
 	static setDueDate(item, value) {
-		const temp = todos.map((element) => {
-			if (item.id === element.id) {
+		const temp = JSON.parse(localStorage.getItem('todos')).map((element) => {
+			if (item.id === +element.id) {
 				element.dueDate = value;
 			}
 			return element;
 		});
 		todos = temp;
+		localStorage.setItem('todos', JSON.stringify(temp));
 	}
 
 	static setPriority(item, value) {
-		const temp = todos.map((element) => {
-			if (item.id === element.id) {
+		const temp = JSON.parse(localStorage.getItem('todos')).map((element) => {
+			if (item.id === +element.id) {
 				element.priority = value;
 			}
 			return element;
 		});
 		todos = temp;
+		localStorage.setItem('todos', JSON.stringify(temp));
 	}
 
 	static setDesc(item, value) {
-		const temp = todos.map((element) => {
-			if (item.id === element.id) {
+		const temp = JSON.parse(localStorage.getItem('todos')).map((element) => {
+			if (item.id === +element.id) {
 				element.desc = value;
 			}
 			return element;
 		});
 		todos = temp;
+		localStorage.setItem('todos', JSON.stringify(temp));
 	}
 
 	static setNotes(item, value) {
-		const temp = todos.map((element) => {
-			if (item.id === element.id) {
+		const temp = JSON.parse(localStorage.getItem('todos')).map((element) => {
+			if (item.id === +element.id) {
 				element.notes = value;
 			}
 			return element;
 		});
 		todos = temp;
+		localStorage.setItem('todos', JSON.stringify(temp));
 	}
 
 	// Accessor Methods

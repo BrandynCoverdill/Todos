@@ -1,7 +1,7 @@
 import 'normalize.css';
 import './styles.css';
 import Todo from './Todo';
-import { showTodos } from './Interface';
+import {showTodos} from './Interface';
 
 /**
  * Returns this UI when the user adds a new todo or views a todo
@@ -15,6 +15,7 @@ function modal(view, id) {
 	parent.style.cssText = `
         min-height: 300px;
         width: 96%;
+		max-width: 1000px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -22,7 +23,8 @@ function modal(view, id) {
         color: black;
         position: absolute;
         top: 20px;
-        left: 2%;
+        left: 50%;
+		transform: translateX(-50%);
         border: 3px solid black;
         pointer-events: auto;
         user-select: auto;
@@ -131,6 +133,13 @@ function modal(view, id) {
 				const descValue = descInput.value.trim();
 				const notesValue = notesInput.value.trim();
 
+				try {
+					Todo.setTodoArray(JSON.parse(localStorage.getItem('todos')));
+					console.log(Todo.todos());
+				} catch (e) {
+					console.log(e);
+				}
+
 				// Create new todo
 				if (dateValue === 'Invalid Date') {
 					const todo = new Todo(
@@ -153,6 +162,9 @@ function modal(view, id) {
 						+id
 					);
 				}
+
+				// Add todo to local storage
+				localStorage.setItem('todos', JSON.stringify(Todo.todos()));
 
 				// Remove modal
 				document.body.removeChild(document.querySelector('.modal'));
@@ -286,7 +298,7 @@ function modal(view, id) {
 				bottom: 10px;
 				left: 10px;
 			`;
-			switch (todo.getIsCompleted) {
+			switch (todo.isCompleted) {
 				case true:
 					markComplete.textContent = 'Mark Incomplete';
 					break;
@@ -328,7 +340,6 @@ function modal(view, id) {
 			// Event to edit a todo
 			editTodoBtn.addEventListener('click', (e) => {
 				e.preventDefault();
-				// TODO: Edit Todo
 
 				// Make inputs active
 				titleInput.removeAttribute('disabled');
@@ -358,7 +369,7 @@ function modal(view, id) {
 				`;
 				updateTodoBtn.textContent = 'Update Todo';
 
-				// Event for updating information about a todo // TODO
+				// Event for updating information about a todo
 				updateTodoBtn.addEventListener('click', (e) => {
 					e.preventDefault();
 
@@ -434,10 +445,21 @@ function modal(view, id) {
 				// Style date input
 				dateInput.setAttribute('type', 'date');
 				if (todo.dueDate !== undefined) {
-					dateInput.value = todo.getDueDate.replace(
-						/(\d\d)\/(\d\d)\/(\d{4})/,
-						'$3-$1-$2'
-					);
+					// Modify date to acceptable input for date input
+					let tempdate = todo.dueDate.split('/').reverse();
+					let temp = tempdate[2];
+					tempdate[2] = tempdate[1];
+					tempdate[1] = temp;
+					if (tempdate[1].length === 1) {
+						tempdate[1] = '0' + tempdate[1];
+					}
+					if (tempdate[2].length === 1) {
+						tempdate[2] = '0' + tempdate[2];
+					}
+					tempdate = tempdate.join('-');
+
+					// Have date input as the date you modified
+					dateInput.value = tempdate;
 				}
 
 				// Style priority
@@ -551,7 +573,7 @@ function modal(view, id) {
 				margin-block-end: 10px;
 			`;
 			titleInput.setAttribute('disabled', 'true');
-			titleInput.value = todo.getTitle;
+			titleInput.value = todo.title;
 
 			date.textContent = 'Due Date:';
 			dateInput.setAttribute('disabled', 'true');
@@ -559,9 +581,13 @@ function modal(view, id) {
 				width: 10em;
 				margin-block-end: 10px;
 			`;
-			dateInput.value = todo.getDueDate;
+			if (todo.dueDate === undefined) {
+				dateInput.value = 'No Due Date';
+			} else {
+				dateInput.value = todo.dueDate;
+			}
 
-			switch (+todo.getPriority) {
+			switch (+todo.priority) {
 				case 1:
 					priority.textContent = `Priority: ${'Low'}`;
 					break;
@@ -585,7 +611,7 @@ function modal(view, id) {
 				margin-block-end: 10px;
 			`;
 			descInput.setAttribute('disabled', 'true');
-			descInput.value = todo.getDesc;
+			descInput.value = todo.desc;
 
 			notes.textContent = 'Notes:';
 			notesInput.style.cssText = `
@@ -593,7 +619,7 @@ function modal(view, id) {
 				margin-block-end: 10px;
 			`;
 			notesInput.setAttribute('disabled', 'true');
-			notesInput.value = todo.getNotes;
+			notesInput.value = todo.notes;
 
 			// Append the elements to the document
 			inputDiv.appendChild(title);
